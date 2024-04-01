@@ -132,18 +132,6 @@ export function* resetPwdSaga(action: {
   }
 }
 
-// get All users
-// export function* fetchAllUsersDataSaga(action: { payload: any }) {
-//   try {
-//     const response: ResponseGenerator = yield call(() =>
-//       baseApi.get(`users/getusers?form_id=${action.payload}`)
-//     );
-//     yield put(fetchAllUsersSuccess(response?.data?.data));
-//   } catch (error) {
-//     yield put(fetchAllUsersFailure(error));
-//   }
-// }
-
 export function* logoutUserSaga() {
   yield call(removeItemsFromSessionStorage);
 }
