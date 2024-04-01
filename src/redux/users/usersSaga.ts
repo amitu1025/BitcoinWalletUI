@@ -21,7 +21,6 @@ export interface ResponseGenerator {
 // Generator function
 export function* getUserAuthenticationSaga(action: any) {
   try {
-    debugger;
     const { mnemonic, username, password } = action.payload;
     const response: ResponseGenerator = yield call(() =>
       baseApi.post("login", { mnemonic, username, password })
@@ -69,7 +68,7 @@ export function* forgotPwdSaga(action: { payload: { email: any } }) {
   try {
     const { email } = action.payload;
     const response: ResponseGenerator = yield call(() =>
-      baseApi.post("users/forgotpwd", { usr_email_id: email })
+      baseApi.post("forgotpwd", { usr_email_id: email })
     );
     if (response && response.status === 200) {
       yield put(
@@ -102,7 +101,7 @@ export function* resetPwdSaga(action: {
   try {
     const { token, password, confirm_password } = action.payload;
     const response: ResponseGenerator = yield call(() =>
-      baseApi.post("users/resetpwd", {
+      baseApi.post("resetpwd", {
         token,
         usr_password: password,
         usr_confirmpwd: confirm_password,

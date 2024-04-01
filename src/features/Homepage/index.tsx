@@ -189,7 +189,6 @@ const Homepage = () => {
   const isLoading = useSelector(
     (state: any) => state?.users?.isAllUsersLoading
   );
-  console.log("allUsers", allUsers);
   React.useEffect(() => {
     dispatch(getAllUsers());
   }, []);

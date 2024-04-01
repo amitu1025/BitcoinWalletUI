@@ -6,12 +6,10 @@ import { Grid, Box } from "@mui/material";
 
 const AuthLayout = () => {
   const navigate = useNavigate();
-
   const token = sessionStorage.getItem("token");
 
   useEffect(() => {
     if (token) {
-      debugger;
       navigate("/home");
     }
   }, [navigate, token]);

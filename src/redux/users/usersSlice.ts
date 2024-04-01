@@ -10,6 +10,7 @@ type User = {
   userResponseStatus: any;
   userResponseMessage: any;
   signupSuccessMsg: any;
+  loginSuccess: boolean;
 };
 
 const usersInitialState: User = {
@@ -22,6 +23,7 @@ const usersInitialState: User = {
   userResponseStatus: "",
   userResponseMessage: "",
   signupSuccessMsg: "",
+  loginSuccess: false,
 };
 
 export const usersSlice = createSlice({
@@ -69,6 +71,7 @@ export const usersSlice = createSlice({
       const { token } = action.payload;
       state.isLoading = false;
       state.bearerToken = token;
+      state.loginSuccess = true;
       sessionStorage.setItem("token", token);
     },
     resetUserData: (state) => {
@@ -112,6 +115,7 @@ export const usersSlice = createSlice({
     resetError: (state) => {
       state.errors = "";
       state.signupSuccessMsg = "";
+      state.loginSuccess = false;
     },
   },
 });

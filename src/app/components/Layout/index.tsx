@@ -20,7 +20,7 @@ const Layout = () => {
   const location = useLocation();
 
   const token = sessionStorage.getItem("token");
-  const user = useSelector((state: any) => state.users.data);
+  // const user = useSelector((state: any) => state.users.data);
 
   useEffect(() => {
     if (!token) {

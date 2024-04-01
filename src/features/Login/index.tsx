@@ -32,8 +32,10 @@ export default function SignIn() {
   const classes = useStyles();
   const navigate = useNavigate();
   const loginErrorMsg = useSelector((state: any) => state.users.errors);
+  const loginSuccess = useSelector((state: any) => state.users.loginSuccess);
   const [loginError, setLoginError] = React.useState("");
   const [open, setOpen] = React.useState(false);
+  const token = sessionStorage.getItem("token");
 
   React.useEffect(() => {
     if (loginErrorMsg) {
@@ -43,6 +45,12 @@ export default function SignIn() {
     }
   }, [loginErrorMsg]);
 
+  React.useEffect(() => {
+    if (loginSuccess && token) {
+      navigate("/home");
+    }
+  }, [loginSuccess, token]);
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
@@ -51,7 +59,6 @@ export default function SignIn() {
       password: formData.get("password"),
     };
     dispatch(getUserAuthentication(userData));
-    navigate("/home");
   };
 
   return (

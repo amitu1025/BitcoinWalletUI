@@ -18,12 +18,14 @@ import Menu from "@mui/material/Menu";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import AccountCircle from "@mui/icons-material/AccountCircle";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { resetError } from "../../../redux/users/usersSlice";
 
 const drawerWidth = 240;
 
 const Header = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
   const handleMenuItemClick = (e: any) => {
@@ -32,6 +34,7 @@ const Header = () => {
 
   const handleLogout = () => {
     sessionStorage.removeItem("token");
+    dispatch(resetError());
     navigate("/login");
   };
 
@@ -111,9 +114,9 @@ const Header = () => {
           <List>
             {[
               { name: "Home", url: "/home" },
-              { name: "Dashboard", url: "/dashboard" },
-              { name: "Users", url: "/users" },
-              { name: "Wallet", url: "/wallet" },
+              { name: "Dashboard", url: "/home" },
+              { name: "Users", url: "/home" },
+              { name: "Wallet", url: "/home" },
             ].map((menuItem, index) => (
               <ListItem key={index} disablePadding>
                 <ListItemButton>
