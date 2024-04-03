@@ -197,6 +197,7 @@ const Homepage = () => {
     event: React.MouseEvent<unknown>,
     property: keyof Data
   ) => {
+    debugger;
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
     setOrderBy(property);

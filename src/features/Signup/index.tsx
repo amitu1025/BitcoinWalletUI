@@ -1,13 +1,9 @@
 import * as React from "react";
-import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import {
   Alert,
@@ -23,6 +19,21 @@ import Copyright from "../../app/components/Copyright";
 import { useDispatch, useSelector } from "react-redux";
 import { registerUser, resetError } from "../../redux/users/usersSlice";
 import CloseIcon from "@mui/icons-material/Close";
+import { z } from "zod";
+
+// Define the validation schema
+const signupSchema = z.object({
+  firstname: z
+    .string()
+    .min(4, { message: "Firstname must be at least 4 characters long" }),
+  lastname: z
+    .string()
+    .min(4, { message: "Lastname must be at least 4 characters long" }),
+  email: z.string().email({ message: "Invalid email address" }),
+  password: z
+    .string()
+    .min(8, { message: "Password must be at least 8 characters long" }),
+});
 
 export default function SignUp() {
   const dispatch = useDispatch();
@@ -37,6 +48,18 @@ export default function SignUp() {
   const [signupError, setSignupError] = React.useState("");
   const [erroropen, setErrorOpen] = React.useState(false);
   const [successopen, setSuccessOpen] = React.useState(false);
+  const [form, setForm] = React.useState({
+    firstname: "",
+    lastname: "",
+    email: "",
+    password: "",
+  });
+  const [errors, setErrors] = React.useState({
+    firstname: "",
+    lastname: "",
+    email: "",
+    password: "",
+  });
 
   React.useEffect(() => {
     if (signupErrorMsg) {
@@ -53,15 +76,18 @@ export default function SignUp() {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-    const userData = {
-      firstname: formData.get("firstname"),
-      lastname: formData.get("lastname"),
-      username: formData.get("email"),
-      password: formData.get("password"),
-    };
-    dispatch(registerUser(userData));
-    // navigate("/login");
+    try {
+      // Validate the form
+      signupSchema.parse(form);
+      dispatch(registerUser(form));
+    } catch (err: any) {
+      // Handle the validation errors
+      setErrors(err.formErrors.fieldErrors);
+    }
+  };
+
+  const handleChange = (e: any) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
   };
 
   return (
@@ -135,6 +161,10 @@ export default function SignUp() {
                 id="firstname"
                 label="Firstname"
                 name="firstname"
+                error={!!errors.firstname}
+                helperText={errors?.firstname}
+                value={form.firstname}
+                onChange={handleChange}
                 autoComplete="firstname"
                 autoFocus
               />
@@ -142,9 +172,13 @@ export default function SignUp() {
                 margin="normal"
                 required
                 fullWidth
+                error={!!errors.lastname}
+                helperText={errors?.lastname}
                 id="lastname"
                 label="Lastname"
                 name="lastname"
+                value={form.lastname}
+                onChange={handleChange}
                 autoComplete="lastname"
                 autoFocus
               />
@@ -152,9 +186,13 @@ export default function SignUp() {
                 margin="normal"
                 required
                 fullWidth
+                error={!!errors.email}
+                helperText={errors?.email}
                 id="email"
                 label="Email Address"
                 name="email"
+                value={form.email}
+                onChange={handleChange}
                 autoComplete="email"
                 autoFocus
               />
@@ -162,15 +200,15 @@ export default function SignUp() {
                 margin="normal"
                 required
                 fullWidth
+                error={!!errors.password}
+                helperText={errors?.password}
+                value={form.password}
+                onChange={handleChange}
                 name="password"
                 label="Password"
                 type="password"
                 id="password"
                 autoComplete="current-password"
-              />
-              <FormControlLabel
-                control={<Checkbox value="remember" color="primary" />}
-                label="Remember me"
               />
               <Button
                 type="submit"

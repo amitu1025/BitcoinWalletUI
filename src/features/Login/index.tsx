@@ -26,6 +26,15 @@ import {
   resetError,
 } from "../../redux/users/usersSlice";
 import CloseIcon from "@mui/icons-material/Close";
+import { z } from "zod";
+
+// Define the validation schema
+const loginSchema = z.object({
+  email: z.string().email({ message: "Invalid email address" }),
+  password: z
+    .string()
+    .min(3, { message: "Password must be at least 3 characters long" }),
+});
 
 export default function SignIn() {
   const dispatch = useDispatch();
@@ -36,6 +45,9 @@ export default function SignIn() {
   const [loginError, setLoginError] = React.useState("");
   const [open, setOpen] = React.useState(false);
   const token = sessionStorage.getItem("token");
+
+  const [form, setForm] = React.useState({ email: "", password: "" });
+  const [errors, setErrors] = React.useState({ email: "", password: "" });
 
   React.useEffect(() => {
     if (loginErrorMsg) {
@@ -53,12 +65,32 @@ export default function SignIn() {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-    const userData = {
-      username: formData.get("email"),
-      password: formData.get("password"),
-    };
-    dispatch(getUserAuthentication(userData));
+    // try {
+    //   const formData = new FormData(event.currentTarget);
+    //   setErrors({ email: "", password: "" });
+    //   const userData = {
+    //     username: formData.get("email"),
+    //     password: formData.get("password"),
+    //   };
+    //   dispatch(getUserAuthentication(userData));
+    // }
+    try {
+      // Validate the form
+      loginSchema.parse(form);
+      const formData = new FormData(event.currentTarget);
+      const userData = {
+        username: formData.get("email"),
+        password: formData.get("password"),
+      };
+      dispatch(getUserAuthentication(userData));
+    } catch (err: any) {
+      // Handle the validation errors
+      setErrors(err.formErrors.fieldErrors);
+    }
+  };
+
+  const handleChange = (e: any) => {
+    setForm({ ...form, [e.target.name]: e?.target?.value });
   };
 
   return (
@@ -108,23 +140,17 @@ export default function SignIn() {
               noValidate
               sx={{ mt: 1 }}
             >
-              {/* <TextField
-                margin="normal"
-                required
-                fullWidth
-                id="mnemonic"
-                label="Enter your Mnemonic"
-                name="mnemonic"
-                autoComplete="mnemonic"
-                autoFocus
-              /> */}
               <TextField
                 margin="normal"
                 required
                 fullWidth
+                error={!!errors.email}
+                helperText={errors?.email}
                 id="email"
                 label="Email Address"
                 name="email"
+                value={form?.email}
+                onChange={handleChange}
                 autoComplete="email"
                 autoFocus
               />
@@ -132,10 +158,14 @@ export default function SignIn() {
                 margin="normal"
                 required
                 fullWidth
+                error={!!errors.password}
                 name="password"
                 label="Password"
                 type="password"
                 id="password"
+                helperText={errors.password}
+                value={form?.password}
+                onChange={handleChange}
                 autoComplete="current-password"
               />
               <FormControlLabel
