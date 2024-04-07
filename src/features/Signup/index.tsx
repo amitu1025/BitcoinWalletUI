@@ -17,22 +17,27 @@ import { useStyles } from "./SignupStyles";
 import { useNavigate } from "react-router-dom";
 import Copyright from "../../app/components/Copyright";
 import { useDispatch, useSelector } from "react-redux";
-import { registerUser, resetError } from "../../redux/users/usersSlice";
+import {
+  generateMnemonicsPhrase,
+  registerUser,
+  resetError,
+} from "../../redux/users/usersSlice";
 import CloseIcon from "@mui/icons-material/Close";
 import { z } from "zod";
+import Fingerprint from "@mui/icons-material/Fingerprint";
 
 // Define the validation schema
 const signupSchema = z.object({
   firstname: z
     .string()
-    .min(4, { message: "Firstname must be at least 4 characters long" }),
+    .min(3, { message: "Firstname must be at least 3 characters long" }),
   lastname: z
     .string()
-    .min(4, { message: "Lastname must be at least 4 characters long" }),
+    .min(3, { message: "Lastname must be at least 3 characters long" }),
   email: z.string().email({ message: "Invalid email address" }),
-  password: z
+  mnemonic: z
     .string()
-    .min(8, { message: "Password must be at least 8 characters long" }),
+    .min(10, { message: "Mnemonic must be at least 10 characters long" }),
 });
 
 export default function SignUp() {
@@ -44,6 +49,9 @@ export default function SignUp() {
   const signupSuccessMsg = useSelector(
     (state: any) => state.users.signupSuccessMsg
   );
+  const newMnemonicPhrase = useSelector(
+    (state: any) => state.users.newMnemonic
+  );
   const [signupSuccess, setSignupSuccess] = React.useState("");
   const [signupError, setSignupError] = React.useState("");
   const [erroropen, setErrorOpen] = React.useState(false);
@@ -52,14 +60,20 @@ export default function SignUp() {
     firstname: "",
     lastname: "",
     email: "",
-    password: "",
+    mnemonic: newMnemonicPhrase,
   });
   const [errors, setErrors] = React.useState({
     firstname: "",
     lastname: "",
     email: "",
-    password: "",
+    mnemonic: "",
   });
+
+  React.useEffect(() => {
+    if (newMnemonicPhrase) {
+      setForm({ ...form, ["mnemonic"]: newMnemonicPhrase });
+    }
+  }, [newMnemonicPhrase]);
 
   React.useEffect(() => {
     if (signupErrorMsg) {
@@ -84,6 +98,10 @@ export default function SignUp() {
       // Handle the validation errors
       setErrors(err.formErrors.fieldErrors);
     }
+  };
+
+  const generateMnemonics = (e: any) => {
+    dispatch(generateMnemonicsPhrase());
   };
 
   const handleChange = (e: any) => {
@@ -200,15 +218,26 @@ export default function SignUp() {
                 margin="normal"
                 required
                 fullWidth
-                error={!!errors.password}
-                helperText={errors?.password}
-                value={form.password}
+                error={!!errors.mnemonic}
+                helperText={errors?.mnemonic}
+                id="mnemonic"
+                label="Enter your mnemonic"
+                name="mnemonic"
+                value={form?.mnemonic}
                 onChange={handleChange}
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-                autoComplete="current-password"
+                multiline
+                rows={6}
+                InputProps={{
+                  endAdornment: (
+                    <IconButton
+                      onClick={generateMnemonics}
+                      color="primary"
+                      aria-label="add an alarm"
+                    >
+                      <Fingerprint />
+                    </IconButton>
+                  ),
+                }}
               />
               <Button
                 type="submit"

@@ -16,9 +16,8 @@ import { useNavigate } from "react-router-dom";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import IconButton from "@mui/material/IconButton";
-import MenuIcon from "@mui/icons-material/Menu";
 import AccountCircle from "@mui/icons-material/AccountCircle";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { resetError } from "../../../redux/users/usersSlice";
 
 const drawerWidth = 240;
@@ -85,7 +84,6 @@ const Header = () => {
               open={Boolean(anchorEl)}
               onClose={handleClose}
             >
-              <MenuItem onClick={handleClose}>Profile</MenuItem>
               <MenuItem onClick={handleLogout}>Logout</MenuItem>
             </Menu>
           </Box>
@@ -114,9 +112,7 @@ const Header = () => {
           <List>
             {[
               { name: "Home", url: "/home" },
-              { name: "Dashboard", url: "/home" },
-              { name: "Users", url: "/home" },
-              { name: "Wallet", url: "/home" },
+              { name: "Wallet", url: "/dashboard" },
             ].map((menuItem, index) => (
               <ListItem key={index} disablePadding>
                 <ListItemButton>

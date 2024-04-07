@@ -197,7 +197,6 @@ const Homepage = () => {
     event: React.MouseEvent<unknown>,
     property: keyof Data
   ) => {
-    debugger;
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
     setOrderBy(property);
@@ -205,7 +204,7 @@ const Homepage = () => {
 
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
-      const newSelected = allUsers?.map((n: any) => n._id);
+      const newSelected = allUsers && allUsers?.map((n: any) => n._id);
       setSelected(newSelected);
       return;
     }

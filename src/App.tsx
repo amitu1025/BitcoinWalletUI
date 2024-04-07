@@ -18,8 +18,6 @@ const App = () => {
       <Route Component={Layout}>
         <Route path="/home" Component={Homepage} />
         <Route path="/dashboard" Component={Dashboard} />
-        <Route path="/dashboard/:stream_id" Component={Dashboard} />
-        <Route path="/reports/:business_domain_id" Component={Dashboard} />
       </Route>
     </Routes>
   );

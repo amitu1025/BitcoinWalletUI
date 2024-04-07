@@ -1,7 +1,7 @@
 import axios, { InternalAxiosRequestConfig } from "axios";
 
 const baseApi = axios.create({
-  baseURL: "http://localhost:3005/",
+  baseURL: "http://localhost:3005/wallet/",
   headers: {
     "Content-Type": "application/json",
     timeout: 30000,

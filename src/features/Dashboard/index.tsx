@@ -1,7 +1,8 @@
 import React from "react";
+import UserInfo from "../UserInfo";
 
 const Dashboard = () => {
-  return <div>Dashboard</div>;
+  return <UserInfo />;
 };
 
 export default Dashboard;

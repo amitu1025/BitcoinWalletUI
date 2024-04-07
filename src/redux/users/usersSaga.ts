@@ -1,6 +1,8 @@
 import baseApi from "../../app/api";
 import { call, put } from "redux-saga/effects";
 import {
+  generateMnemonicsPhraseError,
+  generateMnemonicsPhraseSuccess,
   getAllUsersError,
   getAllUsersSuccess,
   getRegisterUserError,
@@ -38,9 +40,14 @@ export function* getUserAuthenticationSaga(action: any) {
 
 export function* registerUserSaga(action: any) {
   try {
-    const { firstname, lastname, username, password } = action.payload;
+    const { firstname, lastname, email, mnemonic } = action.payload;
     const response: ResponseGenerator = yield call(() =>
-      baseApi.post("register", { firstname, lastname, username, password })
+      baseApi.post("register", {
+        firstname,
+        lastname,
+        username: email,
+        mnemonic,
+      })
     );
     yield put(getRegisterUserSuccess(response.data));
   } catch (error: any) {
@@ -53,10 +60,21 @@ export function* registerUserSaga(action: any) {
   }
 }
 
+export function* generateMnemonicsPhraseSaga(action: any) {
+  try {
+    const response: ResponseGenerator = yield call(() =>
+      baseApi.get("generateMnenomic")
+    );
+    yield put(generateMnemonicsPhraseSuccess(response?.data?.data));
+  } catch (error) {
+    yield put(generateMnemonicsPhraseError(error));
+  }
+}
+
 export function* getAllUserWalletSaga(action: any) {
   try {
     const response: ResponseGenerator = yield call(() =>
-      baseApi.get("getallusers")
+      baseApi.post("getloggedinuser")
     );
     yield put(getAllUsersSuccess(response?.data));
   } catch (error) {

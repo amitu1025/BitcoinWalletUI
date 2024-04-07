@@ -11,6 +11,7 @@ type User = {
   userResponseMessage: any;
   signupSuccessMsg: any;
   loginSuccess: boolean;
+  newMnemonic: any;
 };
 
 const usersInitialState: User = {
@@ -24,12 +25,26 @@ const usersInitialState: User = {
   userResponseMessage: "",
   signupSuccessMsg: "",
   loginSuccess: false,
+  newMnemonic: "",
 };
 
 export const usersSlice = createSlice({
   name: "users",
   initialState: usersInitialState,
   reducers: {
+    generateMnemonicsPhrase: (state) => {
+      state.isLoading = true;
+      state.errors = "";
+    },
+    generateMnemonicsPhraseSuccess: (state, action) => {
+      state.isLoading = false;
+      state.errors = "";
+      state.newMnemonic = action.payload;
+    },
+    generateMnemonicsPhraseError: (state, action) => {
+      state.isLoading = false;
+      state.errors = action?.payload?.message;
+    },
     getUserAuthentication: (state, action) => {
       state.isLoading = true;
       state.errors = "";
@@ -140,6 +155,9 @@ export const {
   getRegisterUserSuccess,
   getRegisterUserError,
   resetError,
+  generateMnemonicsPhrase,
+  generateMnemonicsPhraseSuccess,
+  generateMnemonicsPhraseError,
 } = usersSlice.actions;
 
 export default usersSlice.reducer;

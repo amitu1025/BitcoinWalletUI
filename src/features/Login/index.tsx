@@ -30,13 +30,12 @@ import { z } from "zod";
 
 // Define the validation schema
 const loginSchema = z.object({
-  email: z.string().email({ message: "Invalid email address" }),
-  password: z
+  mnemonic: z
     .string()
-    .min(3, { message: "Password must be at least 3 characters long" }),
+    .min(10, { message: "Mnemonic phrase must be atleast 10 characters long" }),
 });
 
-export default function SignIn() {
+const SignIn = () => {
   const dispatch = useDispatch();
   const classes = useStyles();
   const navigate = useNavigate();
@@ -46,8 +45,8 @@ export default function SignIn() {
   const [open, setOpen] = React.useState(false);
   const token = sessionStorage.getItem("token");
 
-  const [form, setForm] = React.useState({ email: "", password: "" });
-  const [errors, setErrors] = React.useState({ email: "", password: "" });
+  const [form, setForm] = React.useState({ mnemonic: "" });
+  const [errors, setErrors] = React.useState({ mnemonic: "" });
 
   React.useEffect(() => {
     if (loginErrorMsg) {
@@ -65,24 +64,10 @@ export default function SignIn() {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    // try {
-    //   const formData = new FormData(event.currentTarget);
-    //   setErrors({ email: "", password: "" });
-    //   const userData = {
-    //     username: formData.get("email"),
-    //     password: formData.get("password"),
-    //   };
-    //   dispatch(getUserAuthentication(userData));
-    // }
     try {
       // Validate the form
       loginSchema.parse(form);
-      const formData = new FormData(event.currentTarget);
-      const userData = {
-        username: formData.get("email"),
-        password: formData.get("password"),
-      };
-      dispatch(getUserAuthentication(userData));
+      dispatch(getUserAuthentication(form));
     } catch (err: any) {
       // Handle the validation errors
       setErrors(err.formErrors.fieldErrors);
@@ -144,6 +129,20 @@ export default function SignIn() {
                 margin="normal"
                 required
                 fullWidth
+                error={!!errors.mnemonic}
+                helperText={errors?.mnemonic}
+                id="mnemonic"
+                label="Enter your mnemonic"
+                name="mnemonic"
+                value={form?.mnemonic}
+                onChange={handleChange}
+                multiline
+                rows={4}
+              />
+              {/*<TextField
+                margin="normal"
+                required
+                fullWidth
                 error={!!errors.email}
                 helperText={errors?.email}
                 id="email"
@@ -167,7 +166,7 @@ export default function SignIn() {
                 value={form?.password}
                 onChange={handleChange}
                 autoComplete="current-password"
-              />
+          />*/}
               <FormControlLabel
                 control={<Checkbox value="remember" color="primary" />}
                 label="Remember me"
@@ -194,4 +193,6 @@ export default function SignIn() {
       </Container>
     </Box>
   );
-}
+};
+
+export default SignIn;
